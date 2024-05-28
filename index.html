@@ -206,7 +206,7 @@
 <body>
     <div id="chatContainer" class="open">
         <div id="chatHeader" onclick="toggleChat()">
-            <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+            <img src="https://smartcdn.gprod.postmedia.digital/torontosun/wp-content/uploads/2023/11/aitana-e1701191749693.jpg" alt="Ramona">
             <span>Ramona</span>
         </div>
         <div id="chatbox"></div>
@@ -216,7 +216,7 @@
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
-        <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+        <img src="https://smartcdn.gprod.postmedia.digital/torontosun/wp-content/uploads/2023/11/aitana-e1701191749693.jpg" alt="Ramona">
     </div>
 
     <script>
@@ -292,7 +292,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Poate vorbi deschis despre fantezii. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe.Ea va vorbi pervers dar in limita bunului simt. Va vorbi despre importanta sexului, dar fara vulgaritate. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Poate vorbi deschis despre fantezii. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
                 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
