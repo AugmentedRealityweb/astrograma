@@ -195,20 +195,11 @@
                 font-size: 14px;
             }
         }
-        .prompt-box {
+        .prompt {
             display: block;
-            width: calc(100% - 20px); /* To ensure the boxes are not too wide */
-            padding: 10px;
-            margin: 5px auto; /* Center align the boxes */
-            border: 1px solid #9700f8;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            font-weight: bold;
+            margin: 10px 0;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            text-align: center; /* Center align the text */
-        }
-        .prompt-box:hover {
-            background-color: #ececec;
         }
     </style>
 </head>
@@ -360,10 +351,10 @@
                 <div class="message assistant">
                     <p>
                         Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
-                        <div class="prompt-box" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</div>
-                        <div class="prompt-box" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</div>
-                        <div class="prompt-box" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</div>
-                        <div class="prompt-box" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</div>
+                        <span class="prompt" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</span>
+                        <span class="prompt" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</span>
+                        <span class="prompt" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</span>
+                        <span class="prompt" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</span>
                     </p>
                 </div>`;
         }
