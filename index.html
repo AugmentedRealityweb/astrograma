@@ -195,12 +195,18 @@
                 font-size: 14px;
             }
         }
-        .prompt {
-            cursor: pointer;
-            color: #9700f8;
-            font-weight: bold;
-            display: block;
+        .prompt-box {
+            display: inline-block;
+            padding: 10px;
             margin: 5px 0;
+            border: 1px solid #9700f8;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .prompt-box:hover {
+            background-color: #ececec;
         }
     </style>
 </head>
@@ -248,7 +254,7 @@
         }
 
         async function fetchCurrentDateTime() {
-            try {
+                        try {
                 const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
                 const data = await responseTime.json();
                 return data.datetime;
@@ -265,7 +271,7 @@
         function showTypingIndicator() {
             typingIndicator = document.createElement('div');
             typingIndicator.className = 'typing-indicator';
-            typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div>            <div class="dot"></div>';
+            typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
             chatbox.appendChild(typingIndicator);
             chatbox.scrollTop = chatbox.scrollHeight;
         }
@@ -293,7 +299,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Incearca sa aflii lucruri despre utilizator, de exemplu nume, varsta si alte lucruri de interes. Ramona păstrează conversațiile într-o notă plăcută și provocatoare. Ramona va fi kinky dar in limita bunului simt. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Incearca sa aflii lucruri despre utilizator, de exemplu nume, varsta si alte lucruri de interes. Ramona păstrează conversațiile într-o notă plăcută și provocatoare. Ramona va fi kinky dar in limita bunului simt. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
                 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -351,28 +357,14 @@
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-    Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
-    <div class="prompt-box" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</div>
-    <div class="prompt-box" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</div>
-    <div class="prompt-box" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</div>
-    <div class="prompt-box" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</div>
-</p>
-
-<style>
-    .prompt-box {
-        display: inline-block;
-        padding: 10px;
-        margin: 5px 0;
-        border: 1px solid #9700f8;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .prompt-box:hover {
-        background-color: #ececec;
-    }
-</style>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
+                        <div class="prompt-box" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</div>
+                        <div class="prompt-box" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</div>
+                        <div class="prompt-box" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</div>
+                        <div class="prompt-box" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</div>
+                    </p>
+                </div>`;
+        }
 
         window.onload = function() {
             chatContainer.style.display = 'none';
@@ -385,3 +377,4 @@
 </body>
 </html>
 
+               
