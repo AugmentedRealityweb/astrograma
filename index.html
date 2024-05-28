@@ -266,7 +266,7 @@
 
         function formatResponse(response) {
             return response.replace(/(?:\.\s*)/g, '.<br><br>');
-                }
+        }
 
         function showTypingIndicator() {
             typingIndicator = document.createElement('div');
@@ -357,7 +357,7 @@
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘<br>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
                         <div class="prompt-box" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</div>
                         <div class="prompt-box" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</div>
                         <div class="prompt-box" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</div>
