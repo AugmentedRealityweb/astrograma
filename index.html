@@ -12,15 +12,15 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 300px; /* Adjust this value to your desired width */
+            width: 300px;
             max-width: 100%;
-            display: none; /* Initially hidden */
+            display: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 50%; /* Make it oval */
+            border-radius: 50%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            max-height: 90vh; /* Adjust this value to your desired height */
+            max-height: 90vh;
             background-color: white;
             background: url('gif.gif');
             transition: border-radius 0.3s ease;
@@ -30,16 +30,16 @@
             bottom: 50%;
             right: 50%;
             transform: translate(50%, 50%);
-            border-radius: 20px/* Adjust the border-radius when opened */
+            border-radius: 20px;
         }
         #chatbox {
             flex-grow: 1;
-            height: 500px; /* Adjust this value to your desired height */
+            height: 500px;
             padding: 10px;
             overflow-y: auto;
-            background-color: #260050; /* Change background color */
+            background-color: #260050;
             border-top: 1px solid #ccc;
-            color: #4722a2; /* Change text color */
+            color: #4722a2;
         }
         #inputBox {
             flex-grow: 1;
@@ -67,13 +67,13 @@
             flex-grow: 1;
         }
         #sendButton {
-            width: 80px; /* Adjust this value to your desired width */
+            width: 80px;
             background-color: #9700f8;
             color: white;
             border: none;
             border-radius: 0 0 20px 0;
             cursor: pointer;
-            font-size: 16px; /* Adjust this value to your desired font size */
+            font-size: 16px;
         }
         #minimizedChat {
             display: flex;
@@ -96,8 +96,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 62px; /* Dimensiunea inelului exterior */
-            height: 62px; /* Dimensiunea inelului exterior */
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             border: 2px solid transparent;
             background: conic-gradient(from 0deg, #00d79e, #00739e);
@@ -114,8 +114,8 @@
             }
         }
         #minimizedChat img {
-            width: 62px; /* Ajustează dimensiunea imaginii */
-            height: 62px; /* Ajustează dimensiunea imaginii */
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             object-fit: cover;
             z-index: 2;
@@ -129,7 +129,7 @@
             padding: 10px;
             border-radius: 10px;
             max-width: 80%;
-            color: #4722a2; /* Change text color */
+            color: #4722a2;
         }
         .message.user {
             justify-content: flex-end;
@@ -171,7 +171,6 @@
                 opacity: 1;
             }
         }
-        /* Media queries for mobile optimization */
         @media (max-width: 600px) {
             #chatContainer {
                 width: 100%;
@@ -191,18 +190,25 @@
                 height: 30px;
             }
             #sendButton {
-                width: 80px; /* Adjust this value to your desired width */
+                width: 80px;
                 border-radius: 0;
-                font-size: 14px; /* Adjust this value to your desired font size */
+                font-size: 14px;
             }
+        }
+        .prompt {
+            cursor: pointer;
+            color: #9700f8;
+            font-weight: bold;
+            display: block;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div id="chatContainer" class="open">
         <div id="chatHeader" onclick="toggleChat()">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXbrNcJwOokdo1BuFs9YhvAHTcm3u7d-h5MQ&s.jpg" alt="Astrologul">
-            <span>Astrologul</span>
+            <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+            <span>Ramona</span>
         </div>
         <div id="chatbox"></div>
         <div style="display: flex;">
@@ -211,7 +217,7 @@
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXbrNcJwOokdo1BuFs9YhvAHTcm3u7d-h5MQ&s.jpg" alt="Astrologul">
+        <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
     </div>
 
     <script>
@@ -223,7 +229,6 @@
         let typingIndicator;
         let conversationHistory = [];
 
-        // Define the toggleChat function
         function toggleChat() {
             if (chatContainer.style.display === 'none') {
                 chatContainer.style.display = 'block';
@@ -236,141 +241,133 @@
             }
         }
 
-        // Function to load document text
         async function loadDocumentText() {
             const responseText = await fetch('https://raw.githubusercontent.com/AugmentedRealityweb/astrograma/main/Steli.txt');
             const text = await responseText.text();
             return text;
         }
 
-        // Function to fetch current date and time
         async function fetchCurrentDateTime() {
             try {
                 const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
                 const data = await responseTime.json();
-                return data.datetime; // Returnează timpul curent în format ISO
+                return data.datetime;
             } catch (error) {
-    console.error("Error fetching current date and time:", error);
-    return null;
-}
-}
-
-function formatResponse(response) {
-    return response.replace(/(?:\.\s*)/g, '.<br><br>');
-}
-
-function showTypingIndicator() {
-    typingIndicator = document.createElement('div');
-    typingIndicator.className = 'typing-indicator';
-    typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-    chatbox.appendChild(typingIndicator);
-    chatbox.scrollTop = chatbox.scrollHeight;
-}
-
-function removeTypingIndicator() {
-    if (typingIndicator) {
-        typingIndicator.remove();
-        typingIndicator = null;
-    }
-}
-
-async function sendMessage() {
-    const userMessage = inputBox.value.trim();
-    if (userMessage === '') return;
-
-    // Adaugă mesajul utilizatorului în chat
-    chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
-    chatbox.scrollTop = chatbox.scrollHeight;
-
-    // Golește caseta de input
-    inputBox.value = '';
-
-    // Adaugă mesajul utilizatorului în istoricul conversației
-    conversationHistory.push({ role: "user", content: userMessage });
-
-    // Adaugă indicatorul de tastare
-    showTypingIndicator();
-
-    try {
-        const documentText = await loadDocumentText();
-        const currentDateTime = await fetchCurrentDateTime();
-        const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-        const systemMessage = `
-            You are Astrologul, a friendly and knowledgeable astrology specialist.
-            Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}
-        `;
-
-        const responseApi = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: systemMessage
-                    },
-                    ...conversationHistory
-                ]
-            })
-        });
-
-        if (!responseApi.ok) {
-            throw new Error(`HTTP error! status: ${responseApi.status}`);
+                console.error("Error fetching current date and time:", error);
+                return null;
+            }
         }
 
-        const data = await responseApi.json();
-        console.log("Response from API:", data);
+        function formatResponse(response) {
+            return response.replace(/(?:\.\s*)/g, '.<br><br>');
+        }
 
-        if (data.choices && data.choices.length > 0) {
-            let assistantMessage = data.choices[0].message.content;
-            assistantMessage = formatResponse(assistantMessage);
-
-            // Adaugă răspunsul asistentului în istoricul conversației
-            conversationHistory.push({ role: "assistant", content: assistantMessage });
-
-            // Scoate indicatorul de tastare
-            removeTypingIndicator();
-
-            chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
+        function showTypingIndicator() {
+            typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div>            <div class="dot"></div>';
+            chatbox.appendChild(typingIndicator);
             chatbox.scrollTop = chatbox.scrollHeight;
-        } else {
-            throw new Error("Invalid response format");
         }
-    } catch (error) {
-        console.error("Error during API request:", error);
-        removeTypingIndicator();
-        chatbox.innerHTML += `<div class="message assistant"><p>There was an error processing your request. Please try again.</p></div>`;
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-}
 
-async function openChatWithInitialMessage() {
-    toggleChat();
-    chatbox.innerHTML += `
-        <div class="message assistant">
-            <p>
-                Bună, pentru a începe sesiunea, spune-mi despre ce subiect ai vrea să vorbim:<br>
-                1. Harta natală<br>
-                2. Tranzite și Predicții<br>
-                3. Compatibilitate<br>
-                4. Aspecte personale<br>
-                5. Astrologie zilnică și săptămânală<br>
-                6. Întrebări generale despre astrologie
-            </p>
-        </div>`;
-}
+        function removeTypingIndicator() {
+            if (typingIndicator) {
+                typingIndicator.remove();
+                typingIndicator = null;
+            }
+        }
 
-// Automatically open chat after 2 seconds
-window.onload = function() {
-    chatContainer.style.display = 'none';
-    minimizedChat.style.display = 'flex';
-    setTimeout(() => {
-        openChatWithInitialMessage();
-    }, 2200);
-};
-</script>
+        async function sendMessage() {
+            const userMessage = inputBox.value.trim();
+            if (userMessage === '') return;
+
+            chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            inputBox.value = '';
+
+            conversationHistory.push({ role: "user", content: userMessage });
+
+            showTypingIndicator();
+
+            try {
+                const documentText = await loadDocumentText();
+                const currentDateTime = await fetchCurrentDateTime();
+                const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
+                Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
+
+                const responseApi = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            {
+                                role: "system",
+                                content: systemMessage
+                            },
+                            ...conversationHistory
+                        ]
+                    })
+                });
+
+                if (!responseApi.ok) {
+                    throw new Error(`HTTP error! status: ${responseApi.status}`);
+                }
+
+                const data = await responseApi.json();
+                console.log("Response from API:", data);
+
+                if (data.choices && data.choices.length > 0) {
+                    let assistantMessage = data.choices[0].message.content;
+                    assistantMessage = formatResponse(assistantMessage);
+
+                    conversationHistory.push({ role: "assistant", content: assistantMessage });
+
+                    removeTypingIndicator();
+
+                    chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                } else {
+                    throw new Error("Invalid response format");
+                }
+            } catch (error) {
+                console.error("Error during API request:", error);
+                removeTypingIndicator();
+                chatbox.innerHTML += `<div class="message assistant"><p>There was an error processing your request. Please try again.</p></div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        }
+
+        function sendPromptMessage(message) {
+            inputBox.value = message;
+            sendMessage();
+        }
+
+        async function openChatWithInitialMessage() {
+            toggleChat();
+            chatbox.innerHTML += `
+                <div class="message assistant">
+                    <p>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
+                        <span class="prompt" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</span><br>
+                        <span class="prompt" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</span><br>
+                        <span class="prompt" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</span><br>
+                        <span class="prompt" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</span><br>
+                    </p>
+                </div>`;
+        }
+
+        window.onload = function() {
+            chatContainer.style.display = 'none';
+            minimizedChat.style.display = 'flex';
+            setTimeout(() => {
+                openChatWithInitialMessage();
+            }, 2200);
+        };
+    </script>
 </body>
 </html>
+
