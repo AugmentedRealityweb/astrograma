@@ -197,13 +197,15 @@
         }
         .prompt-box {
             display: block;
+            width: calc(100% - 20px); /* To ensure the boxes are not too wide */
             padding: 10px;
-            margin: 5px 0;
+            margin: 5px auto; /* Center align the boxes */
             border: 1px solid #9700f8;
             border-radius: 5px;
             background-color: #f9f9f9;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center; /* Center align the text */
         }
         .prompt-box:hover {
             background-color: #ececec;
