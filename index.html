@@ -37,6 +37,18 @@
             border-top: 1px solid #ccc;
             color: #4722a2; /* Change text color */
         }
+        /* Custom scrollbar styling */
+        #chatbox::-webkit-scrollbar {
+            width: 12px;
+        }
+        #chatbox::-webkit-scrollbar-thumb {
+            background-color: #975bf8;
+            border-radius: 10px;
+            border: 3px solid #260050;
+        }
+        #chatbox::-webkit-scrollbar-track {
+            background: #260050;
+        }
         #inputBox {
             flex-grow: 1;
             border: none;
@@ -61,6 +73,17 @@
         #chatHeader span {
             font-weight: bold;
             flex-grow: 1;
+        }
+        /* Custom close button */
+        #closeButton {
+            background: none;
+            border: none;
+            color: black;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        #closeButton:hover {
+            color: white;
         }
         #sendButton {
             width: 80px; /* Adjust this value to your desired width */
@@ -316,7 +339,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.
+                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
