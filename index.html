@@ -262,6 +262,7 @@
                 chatContainer.classList.add('open');
                 minimizedChat.style.display = 'none';
                 notificationDot.style.display = 'none';
+                startFreeSession();
             } else {
                 chatContainer.style.display = 'none';
                 chatContainer.classList.remove('open');
@@ -324,7 +325,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
+                const systemMessage = `Tu esti Ramona.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -389,13 +390,13 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună😉</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Ai 5 minute.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
-            setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
+            setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
         }
 
         function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Te rog alege o variantă plătită pentru a continua:</p>
+            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
                 <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
                 <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                 <p>Introduceți codul pentru a continua conversația.</p></div>`;
@@ -406,7 +407,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         function handleCodeInput(enteredCode) {
             chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
             if (enteredCode === '1234') {
-                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația.</p></div>`;
+                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
                 waitingForCode = false;
             } else {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
@@ -419,7 +420,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
                         <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
