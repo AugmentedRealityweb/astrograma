@@ -268,195 +268,197 @@
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const chatbox = document.getElementById('chatbox');
-        const inputBox = document.getElementById('inputBox');
-        const sendButton = document.getElementById('sendButton');
-        const minimizedChat = document.getElementById('minimizedChat');
-        const notificationDot = document.getElementById('notificationDot');
-        const messageSound = document.getElementById('messageSound');
-        const codeInputContainer = document.getElementById('codeInputContainer');
-        const codeInput = document.getElementById('codeInput');
-        let typingIndicator;
-        let conversationHistory = [];
+    const chatContainer = document.getElementById('chatContainer');
+    const chatbox = document.getElementById('chatbox');
+    const inputBox = document.getElementById('inputBox');
+    const sendButton = document.getElementById('sendButton');
+    const minimizedChat = document.getElementById('minimizedChat');
+    const notificationDot = document.getElementById('notificationDot');
+    const messageSound = document.getElementById('messageSound');
+    let typingIndicator;
+    let conversationHistory = [];
+    let waitingForCode = false;
+    let timerStarted = false;
 
-        function toggleChat() {
-            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
-                chatContainer.style.display = 'flex'; // Ensure it uses flex for display
-                chatContainer.classList.add('open');
-                minimizedChat.style.display = 'none';
-                notificationDot.style.display = 'none';
-            } else {
-                chatContainer.style.display = 'none';
-                chatContainer.classList.remove('open');
-                minimizedChat.style.display = 'flex';
+    function toggleChat() {
+        if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+            chatContainer.style.display = 'flex'; // Ensure it uses flex for display
+            chatContainer.classList.add('open');
+            minimizedChat.style.display = 'none';
+            notificationDot.style.display = 'none';
+            if (!timerStarted) {
+                startTimer();
+                timerStarted = true;
             }
+        } else {
+            chatContainer.style.display = 'none';
+            chatContainer.classList.remove('open');
+            minimizedChat.style.display = 'flex';
         }
+    }
 
-        async function loadDocumentText() {
-            const responseText = await fetch('https://raw.githubusercontent.com/AugmentedRealityweb/astrograma/main/Steli.txt');
-            const text = await responseText.text();
-            return text;
+    async function loadDocumentText() {
+        const responseText = await fetch('https://raw.githubusercontent.com/AugmentedRealityweb/astrograma/main/Steli.txt');
+        const text = await responseText.text();
+        return text;
+    }
+
+    async function fetchCurrentDateTime() {
+        try {
+            const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
+            const data = await responseTime.json();
+            return data.datetime;
+        } catch (error) {
+            console.error("Error fetching current date and time:", error);
+            return null;
         }
+    }
 
-        async function fetchCurrentDateTime() {
-            try {
-                const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
-                const data = await responseTime.json();
-                return data.datetime;
-            } catch (error) {
-                console.error("Error fetching current date and time:", error);
-                return null;
-            }
+    function formatResponse(response) {
+        return response.replace(/(?:\.\s*)/g, '.<br><br>');
+    }
+
+    function showTypingIndicator(messageLength) {
+        typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        chatbox.appendChild(typingIndicator);
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        if (messageLength > 10) {
+            setTimeout(removeTypingIndicator, 4000);
+        } else {
+            setTimeout(removeTypingIndicator, 1000);
         }
+    }
 
-        function formatResponse(response) {
-            return response.replace(/(?:\.\s*)/g, '.<br><br>');
+    function removeTypingIndicator() {
+        if (typingIndicator) {
+            typingIndicator.remove();
+            typingIndicator = null;
         }
+    }
 
-        function showTypingIndicator(messageLength) {
-            typingIndicator = document.createElement('div');
-            typingIndicator.className = 'typing-indicator';
-            typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-            chatbox.appendChild(typingIndicator);
-            chatbox.scrollTop = chatbox.scrollHeight;
+    async function sendMessage(message) {
+        chatbox.innerHTML += `<div class="message user"><p>${message}</p></div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+        inputBox.value = '';
 
-            if (messageLength > 10) {
-                setTimeout(removeTypingIndicator, 4000);
-            } else {
-                setTimeout(removeTypingIndicator, 1000);
-            }
-        }
+        conversationHistory.push({ role: "user", content: message });
 
-        function removeTypingIndicator() {
-            if (typingIndicator) {
-                typingIndicator.remove();
-                typingIndicator = null;
-            }
-        }
+        showTypingIndicator(message.split(' ').length);
 
-        async function sendMessage() {
-            const userMessage = inputBox.value.trim();
-            if (userMessage === '') return;
-
-            chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-            inputBox.value = '';
-
-            conversationHistory.push({ role: "user", content: userMessage });
-
-            showTypingIndicator(userMessage.split(' ').length);
-
-            try {
-                const documentText = await loadDocumentText();
-                const currentDateTime = await fetchCurrentDateTime();
-                const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
+        try {
+            const documentText = await loadDocumentText();
+            const currentDateTime = await fetchCurrentDateTime();
+            const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
+            const systemMessage = `Tu esti Ramona.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
-                const responseApi = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: "gpt-3.5-turbo",
-                        messages: [
-                            {
-                                role: "system",
-                                content: systemMessage
-                            },
-                            ...conversationHistory
-                        ]
-                    })
-                });
+            const responseApi = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        {
+                            role: "system",
+                            content: systemMessage
+                        },
+                        ...conversationHistory
+                    ]
+                })
+            });
 
-                if (!responseApi.ok) {
-                    throw new Error(`HTTP error! status: ${responseApi.status}`);
-                }
+            if (!responseApi.ok) {
+                throw new Error(`HTTP error! status: ${responseApi.status}`);
+            }
 
-                const data = await responseApi.json();
-                console.log("Response from API:", data);
+            const data = await responseApi.json();
+            console.log("Response from API:", data);
 
-                if (data.choices && data.choices.length > 0) {
-                    let assistantMessage = data.choices[0].message.content;
-                    assistantMessage = formatResponse(assistantMessage);
+            if (data.choices && data.choices.length > 0) {
+                let assistantMessage = data.choices[0].message.content;
+                assistantMessage = formatResponse(assistantMessage);
 
-                    conversationHistory.push({ role: "assistant", content: assistantMessage });
+                conversationHistory.push({ role: "assistant", content: assistantMessage });
 
-                    removeTypingIndicator();
-
-                    chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
-                    chatbox.scrollTop = chatbox.scrollHeight;
-
-                    messageSound.play();
-                    if (chatContainer.style.display === 'none') {
-                        notificationDot.style.display = 'block';
-                    }
-                } else {
-                    throw new Error("Invalid response format");
-                }
-            } catch (error) {
-                console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="message assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog să scrii din nou.</p></div>`;
+
+                chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
-            }
-        }
 
-        function sendPromptMessage(message) {
-            inputBox.value = message;
-            sendMessage();
-        }
-
-        function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute de neuitat.</p></div>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-            setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
-        }
-
-        function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Te rog alege o variantă plătită pentru a continua:</p>
-                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
-                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
-                <p>Introduceți codul pentru a continua conversația.</p></div>`;
-            chatbox.scrollTop = chatbox.scrollHeight;
-            codeInputContainer.style.display = 'flex';
-        }
-
-        function confirmCode() {
-            const enteredCode = codeInput.value.trim();
-            if (enteredCode === '1234') {
-                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația.</p></div>`;
-                codeInputContainer.style.display = 'none';
-                chatbox.scrollTop = chatbox.scrollHeight;
+                messageSound.play();
+                if (chatContainer.style.display === 'none') {
+                    notificationDot.style.display = 'block';
+                }
             } else {
-                chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
+                throw new Error("Invalid response format");
             }
-            codeInput.value = '';
+        } catch (error) {
+            console.error("Error during API request:", error);
+            removeTypingIndicator();
+            chatbox.innerHTML += `<div class="message assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog să scrii din nou.</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
+    }
 
-        async function openChatWithInitialMessage() {
-            toggleChat();
-            chatbox.innerHTML += `
-                <div class="message assistant">
-                    <p>
-                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
-                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
-                    </p>
-                </div>`;
+    function handleMessageInput() {
+        const userMessage = inputBox.value.trim();
+        if (userMessage === '') return;
+
+        if (waitingForCode) {
+            handleCodeInput(userMessage);
+        } else {
+            sendMessage(userMessage);
         }
+    }
 
-        window.onload = function() {
-            chatContainer.style.display = 'none';
-            minimizedChat.style.display = 'flex';
-            setTimeout(() => {
-                openChatWithInitialMessage();
-            }, 2200);
-        };
-    </script>
+    function startTimer() {
+        setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
+    }
+
+    function showPaywall() {
+        chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
+            <p>Introduceți codul pentru a continua conversația.</p></div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+        waitingForCode = true;
+    }
+
+    function handleCodeInput(enteredCode) {
+        chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
+        if (enteredCode === '1234') {
+            chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
+            waitingForCode = false;
+        } else {
+            chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
+        }
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    async function openChatWithInitialMessage() {
+        toggleChat();
+        chatbox.innerHTML += `
+            <div class="message assistant">
+                <p>
+                    Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                    <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
+                    <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
+                    <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
+                </p>
+            </div>`;
+    }
+
+    window.onload = function() {
+        chatContainer.style.display = 'none';
+        minimizedChat.style.display = 'flex';
+        setTimeout(() => {
+            openChatWithInitialMessage();
+        }, 2200);
+    };
+</script>
+
 </body>
 </html>
