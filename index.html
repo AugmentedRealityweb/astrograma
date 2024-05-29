@@ -213,6 +213,25 @@
                 font-size: 14px; /* Adjust this value to your desired font size */
             }
         }
+        #codeInputContainer {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #codeInput {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        #confirmCodeButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #9700f8;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
         .prompt {
             font-weight: bold;
             cursor: pointer;
@@ -235,8 +254,12 @@
         </div>
         <div id="chatbox"></div>
         <div style="display: flex;">
-            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') handleMessageInput()">
-            <button id="sendButton" onclick="handleMessageInput()">Send</button>
+            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') sendMessage()">
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+        <div id="codeInputContainer">
+            <input type="text" id="codeInput" placeholder="Introduceți codul">
+            <button id="confirmCodeButton" onclick="confirmCode()">Confirm</button>
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
@@ -252,9 +275,10 @@
         const minimizedChat = document.getElementById('minimizedChat');
         const notificationDot = document.getElementById('notificationDot');
         const messageSound = document.getElementById('messageSound');
+        const codeInputContainer = document.getElementById('codeInputContainer');
+        const codeInput = document.getElementById('codeInput');
         let typingIndicator;
         let conversationHistory = [];
-        let waitingForCode = false;
 
         function toggleChat() {
             if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
@@ -262,7 +286,6 @@
                 chatContainer.classList.add('open');
                 minimizedChat.style.display = 'none';
                 notificationDot.style.display = 'none';
-                startFreeSession();
             } else {
                 chatContainer.style.display = 'none';
                 chatContainer.classList.remove('open');
@@ -312,20 +335,23 @@
             }
         }
 
-        async function sendMessage(message) {
-            chatbox.innerHTML += `<div class="message user"><p>${message}</p></div>`;
+        async function sendMessage() {
+            const userMessage = inputBox.value.trim();
+            if (userMessage === '') return;
+
+            chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             inputBox.value = '';
 
-            conversationHistory.push({ role: "user", content: message });
+            conversationHistory.push({ role: "user", content: userMessage });
 
-            showTypingIndicator(message.split(' ').length);
+            showTypingIndicator(userMessage.split(' ').length);
 
             try {
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona.
+                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -378,41 +404,37 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             }
         }
 
-        function handleMessageInput() {
-            const userMessage = inputBox.value.trim();
-            if (userMessage === '') return;
-
-            if (waitingForCode) {
-                handleCodeInput(userMessage);
-            } else {
-                sendMessage(userMessage);
-            }
+        function sendPromptMessage(message) {
+            inputBox.value = message;
+            sendMessage();
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Ai 5 minute.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute de neuitat.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
-            setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
+            setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
         }
 
         function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
-                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
+            chatbox.innerHTML += `<div class="message assistant"><p>Te rog alege o variantă plătită pentru a continua:</p>
+                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
                 <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                 <p>Introduceți codul pentru a continua conversația.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
-            waitingForCode = true;
+            codeInputContainer.style.display = 'flex';
         }
 
-        function handleCodeInput(enteredCode) {
-            chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
+        function confirmCode() {
+            const enteredCode = codeInput.value.trim();
             if (enteredCode === '1234') {
-                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
-                waitingForCode = false;
+                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația.</p></div>`;
+                codeInputContainer.style.display = 'none';
+                chatbox.scrollTop = chatbox.scrollHeight;
             } else {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
             }
-            chatbox.scrollTop = chatbox.scrollHeight;
+            codeInput.value = '';
         }
 
         async function openChatWithInitialMessage() {
@@ -420,9 +442,9 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
-                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
+                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
+                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                     </p>
                 </div>`;
