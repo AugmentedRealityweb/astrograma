@@ -339,7 +339,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
+                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -397,16 +397,24 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             sendMessage();
         }
 
+        function startFreeSession() {
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Ai 5 minute de neuitat alături de mine. Ce ai vrea să vorbim?</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            setTimeout(() => {
+                chatbox.innerHTML += `<div class="message assistant"><p>Te rog alege o variantă plătită pentru a continua.</p></div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }, 300000); // 5 minutes in milliseconds
+        }
+
         async function openChatWithInitialMessage() {
             toggleChat();
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
-                        <span class="prompt" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</span>
-                        <span class="prompt" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</span>
-                        <span class="prompt" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</span>
-                        <span class="prompt" onclick="sendPromptMessage('Hai să ne distrăm împreună.')">Hai să ne distrăm împreună.</span>
+                        Bună, Eu sunt Ramona. Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
+                        <span class="prompt" onclick="window.location.href='https://99delucruri.gumroad.com/l/30min'">Sesiune 30 minute 20lei</span>
+                        <span class="prompt" onclick="window.location.href='https://99delucruri.gumroad.com/l/30min'">Sesiune 1 zi 100lei</span>
                     </p>
                 </div>`;
         }
