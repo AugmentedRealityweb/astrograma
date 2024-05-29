@@ -53,7 +53,28 @@
             border-radius: 20px;
             border: 3px solid #260050;
         }
-    
+        .chat-bubble {
+            padding: 5px 10px; /* Ajustăm padding-ul pentru a reduce spațiul sus-jos */
+            margin: 5px 0; /* Ajustăm margin pentru a reduce spațiul dintre mesaje */
+            border-radius: 20px; /* Modifică valoarea pentru a rotunji marginile */
+            display: inline-block;
+            max-width: 80%;
+            word-wrap: break-word; /* Asigurăm că textul lung se rupe la marginea casetei */
+        }
+
+        .chat-bubble.user {
+            background-color: #ffffff;
+            color: #4722a2;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .chat-bubble.assistant {
+            background-color: #f1f1f1;
+            color: #4722a2;
+            align-self: flex-start;
+            text-align: left;
+        }
         #inputBox {
             flex-grow: 1;
             border: none;
