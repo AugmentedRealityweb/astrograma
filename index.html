@@ -397,11 +397,11 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function startFreeSessionTimer() {
-            setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
+            setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
         }
 
         function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Dragule, cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua. După efectuarea plății vei primi un cod pe care te rog să-l introduci aici.😘 </p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Dragule, cele 5 minute s-au scurs...Te rog alege o variantă plătită de mai sus pentru a continua. După efectuarea plății vei primi un cod pe care te rog să-l introduci aici.😘 </p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             waitingForCode = true;
         }
@@ -422,10 +422,10 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
                         <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
+                        <span class="prompt" onclick="window.open('https://ramonachat.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
+                        <span class="prompt" onclick="window.open('https://ramonachat.gumroad.com/l/ramona24', '_blank')">Sesiune 24 ore 100lei</span>
                     </p>
                 </div>`;
         }
