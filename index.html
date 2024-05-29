@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scaleable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ChatGPT Integration</title>
     <style>
         body {
@@ -213,25 +213,6 @@
                 font-size: 14px; /* Adjust this value to your desired font size */
             }
         }
-        #codeInputContainer {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        #codeInput {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        #confirmCodeButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #9700f8;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
         .prompt {
             font-weight: bold;
             cursor: pointer;
@@ -254,12 +235,8 @@
         </div>
         <div id="chatbox"></div>
         <div style="display: flex;">
-            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') sendMessage()">
-            <button id="sendButton" onclick="sendMessage()">Send</button>
-        </div>
-        <div id="codeInputContainer">
-            <input type="text" id="codeInput" placeholder="Introduceți codul">
-            <button id="confirmCodeButton" onclick="confirmCode()">Confirm</button>
+            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') handleMessageInput()">
+            <button id="sendButton" onclick="handleMessageInput()">Send</button>
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
@@ -275,10 +252,9 @@
         const minimizedChat = document.getElementById('minimizedChat');
         const notificationDot = document.getElementById('notificationDot');
         const messageSound = document.getElementById('messageSound');
-        const codeInputContainer = document.getElementById('codeInputContainer');
-        const codeInput = document.getElementById('codeInput');
         let typingIndicator;
         let conversationHistory = [];
+        let waitingForCode = false;
 
         function toggleChat() {
             if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
@@ -335,17 +311,14 @@
             }
         }
 
-        async function sendMessage() {
-            const userMessage = inputBox.value.trim();
-            if (userMessage === '') return;
-
-            chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
+        async function sendMessage(message) {
+            chatbox.innerHTML += `<div class="message user"><p>${message}</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             inputBox.value = '';
 
-            conversationHistory.push({ role: "user", content: userMessage });
+            conversationHistory.push({ role: "user", content: message });
 
-            showTypingIndicator(userMessage.split(' ').length);
+            showTypingIndicator(message.split(' ').length);
 
             try {
                 const documentText = await loadDocumentText();
@@ -404,13 +377,19 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             }
         }
 
-        function sendPromptMessage(message) {
-            inputBox.value = message;
-            sendMessage();
+        function handleMessageInput() {
+            const userMessage = inputBox.value.trim();
+            if (userMessage === '') return;
+
+            if (waitingForCode) {
+                handleCodeInput(userMessage);
+            } else {
+                sendMessage(userMessage);
+            }
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute de neuitat.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
         }
@@ -421,20 +400,17 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
                 <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                 <p>Introduceți codul pentru a continua conversația.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
-            codeInputContainer.style.display = 'flex';
+            waitingForCode = true;
         }
 
-        function confirmCode() {
-            const enteredCode = codeInput.value.trim();
+        function handleCodeInput(enteredCode) {
             if (enteredCode === '1234') {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația.</p></div>`;
-                codeInputContainer.style.display = 'none';
-                chatbox.scrollTop = chatbox.scrollHeight;
+                waitingForCode = false;
             } else {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
             }
-            codeInput.value = '';
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
 
         async function openChatWithInitialMessage() {
@@ -442,7 +418,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
                         <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
