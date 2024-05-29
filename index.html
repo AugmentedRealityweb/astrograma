@@ -229,7 +229,7 @@
     </audio>
     <div id="chatContainer">
         <div id="chatHeader">
-                       <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+            <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
             <span>Ramona</span>
             <button id="closeButton" onclick="toggleChat()">✖</button>
         </div>
@@ -389,7 +389,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună😉</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             setTimeout(showPaywall, 300000); // 5 minutes in milliseconds
         }
@@ -419,8 +419,8 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
             chatbox.innerHTML += `
                 <div class="message assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
-                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
+                        Bună, Eu sunt Ramona! Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                     </p>
@@ -437,4 +437,3 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
     </script>
 </body>
 </html>
-
