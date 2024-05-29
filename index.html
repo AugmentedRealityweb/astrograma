@@ -213,25 +213,6 @@
                 font-size: 14px; /* Adjust this value to your desired font size */
             }
         }
-        #codeInputContainer {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        #codeInput {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        #confirmCodeButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #9700f8;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
         .prompt {
             font-weight: bold;
             cursor: pointer;
@@ -254,12 +235,8 @@
         </div>
         <div id="chatbox"></div>
         <div style="display: flex;">
-            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') sendMessage()">
-            <button id="sendButton" onclick="sendMessage()">Send</button>
-        </div>
-        <div id="codeInputContainer">
-            <input type="text" id="codeInput" placeholder="Introduceți codul">
-            <button id="confirmCodeButton" onclick="confirmCode()">Confirm</button>
+            <input type="text" id="inputBox" placeholder="Scrie mesajul tau aici..." onkeydown="if(event.key === 'Enter') handleMessageInput()">
+            <button id="sendButton" onclick="handleMessageInput()">Send</button>
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
@@ -268,197 +245,199 @@
     </div>
 
     <script>
-    const chatContainer = document.getElementById('chatContainer');
-    const chatbox = document.getElementById('chatbox');
-    const inputBox = document.getElementById('inputBox');
-    const sendButton = document.getElementById('sendButton');
-    const minimizedChat = document.getElementById('minimizedChat');
-    const notificationDot = document.getElementById('notificationDot');
-    const messageSound = document.getElementById('messageSound');
-    let typingIndicator;
-    let conversationHistory = [];
-    let waitingForCode = false;
-    let timerStarted = false;
+        const chatContainer = document.getElementById('chatContainer');
+        const chatbox = document.getElementById('chatbox');
+        const inputBox = document.getElementById('inputBox');
+        const sendButton = document.getElementById('sendButton');
+        const minimizedChat = document.getElementById('minimizedChat');
+        const notificationDot = document.getElementById('notificationDot');
+        const messageSound = document.getElementById('messageSound');
+        let typingIndicator;
+        let conversationHistory = [];
+        let waitingForCode = false;
+        let freeSessionStarted = false;
 
-    function toggleChat() {
-        if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
-            chatContainer.style.display = 'flex'; // Ensure it uses flex for display
-            chatContainer.classList.add('open');
-            minimizedChat.style.display = 'none';
-            notificationDot.style.display = 'none';
-            if (!timerStarted) {
-                startTimer();
-                timerStarted = true;
+        function toggleChat() {
+            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+                chatContainer.style.display = 'flex'; // Ensure it uses flex for display
+                chatContainer.classList.add('open');
+                minimizedChat.style.display = 'none';
+                notificationDot.style.display = 'none';
+                startFreeSessionTimer();
+            } else {
+                chatContainer.style.display = 'none';
+                chatContainer.classList.remove('open');
+                minimizedChat.style.display = 'flex';
             }
-        } else {
-            chatContainer.style.display = 'none';
-            chatContainer.classList.remove('open');
-            minimizedChat.style.display = 'flex';
         }
-    }
 
-    async function loadDocumentText() {
-        const responseText = await fetch('https://raw.githubusercontent.com/AugmentedRealityweb/astrograma/main/Steli.txt');
-        const text = await responseText.text();
-        return text;
-    }
-
-    async function fetchCurrentDateTime() {
-        try {
-            const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
-            const data = await responseTime.json();
-            return data.datetime;
-        } catch (error) {
-            console.error("Error fetching current date and time:", error);
-            return null;
+        async function loadDocumentText() {
+            const responseText = await fetch('https://raw.githubusercontent.com/AugmentedRealityweb/astrograma/main/Steli.txt');
+            const text = await responseText.text();
+            return text;
         }
-    }
 
-    function formatResponse(response) {
-        return response.replace(/(?:\.\s*)/g, '.<br><br>');
-    }
-
-    function showTypingIndicator(messageLength) {
-        typingIndicator = document.createElement('div');
-        typingIndicator.className = 'typing-indicator';
-        typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-        chatbox.appendChild(typingIndicator);
-        chatbox.scrollTop = chatbox.scrollHeight;
-
-        if (messageLength > 10) {
-            setTimeout(removeTypingIndicator, 4000);
-        } else {
-            setTimeout(removeTypingIndicator, 1000);
+        async function fetchCurrentDateTime() {
+            try {
+                const responseTime = await fetch('https://worldtimeapi.org/api/timezone/Europe/Bucharest');
+                const data = await responseTime.json();
+                return data.datetime;
+            } catch (error) {
+                console.error("Error fetching current date and time:", error);
+                return null;
+            }
         }
-    }
 
-    function removeTypingIndicator() {
-        if (typingIndicator) {
-            typingIndicator.remove();
-            typingIndicator = null;
+        function formatResponse(response) {
+            return response.replace(/(?:\.\s*)/g, '.<br><br>');
         }
-    }
 
-    async function sendMessage(message) {
-        chatbox.innerHTML += `<div class="message user"><p>${message}</p></div>`;
-        chatbox.scrollTop = chatbox.scrollHeight;
-        inputBox.value = '';
+        function showTypingIndicator(messageLength) {
+            typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+            chatbox.appendChild(typingIndicator);
+            chatbox.scrollTop = chatbox.scrollHeight;
 
-        conversationHistory.push({ role: "user", content: message });
+            if (messageLength > 10) {
+                setTimeout(removeTypingIndicator, 4000);
+            } else {
+                setTimeout(removeTypingIndicator, 1000);
+            }
+        }
 
-        showTypingIndicator(message.split(' ').length);
+        function removeTypingIndicator() {
+            if (typingIndicator) {
+                typingIndicator.remove();
+                typingIndicator = null;
+            }
+        }
 
-        try {
-            const documentText = await loadDocumentText();
-            const currentDateTime = await fetchCurrentDateTime();
-            const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-            const systemMessage = `Tu esti Ramona.
+        async function sendMessage(message) {
+            chatbox.innerHTML += `<div class="message user"><p>${message}</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            inputBox.value = '';
+
+            conversationHistory.push({ role: "user", content: message });
+
+            showTypingIndicator(message.split(' ').length);
+
+            try {
+                const documentText = await loadDocumentText();
+                const currentDateTime = await fetchCurrentDateTime();
+                const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
+                const systemMessage = `Tu esti Ramona.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
-            const responseApi = await fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [
-                        {
-                            role: "system",
-                            content: systemMessage
-                        },
-                        ...conversationHistory
-                    ]
-                })
-            });
+                const responseApi = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            {
+                                role: "system",
+                                content: systemMessage
+                            },
+                            ...conversationHistory
+                        ]
+                    })
+                });
 
-            if (!responseApi.ok) {
-                throw new Error(`HTTP error! status: ${responseApi.status}`);
-            }
-
-            const data = await responseApi.json();
-            console.log("Response from API:", data);
-
-            if (data.choices && data.choices.length > 0) {
-                let assistantMessage = data.choices[0].message.content;
-                assistantMessage = formatResponse(assistantMessage);
-
-                conversationHistory.push({ role: "assistant", content: assistantMessage });
-
-                removeTypingIndicator();
-
-                chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
-                chatbox.scrollTop = chatbox.scrollHeight;
-
-                messageSound.play();
-                if (chatContainer.style.display === 'none') {
-                    notificationDot.style.display = 'block';
+                if (!responseApi.ok) {
+                    throw new Error(`HTTP error! status: ${responseApi.status}`);
                 }
-            } else {
-                throw new Error("Invalid response format");
+
+                const data = await responseApi.json();
+                console.log("Response from API:", data);
+
+                if (data.choices && data.choices.length > 0) {
+                    let assistantMessage = data.choices[0].message.content;
+                    assistantMessage = formatResponse(assistantMessage);
+
+                    conversationHistory.push({ role: "assistant", content: assistantMessage });
+
+                    removeTypingIndicator();
+
+                    chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
+                    chatbox.scrollTop = chatbox.scrollHeight;
+
+                    messageSound.play();
+                    if (chatContainer.style.display === 'none') {
+                        notificationDot.style.display = 'block';
+                    }
+                } else {
+                    throw new Error("Invalid response format");
+                }
+            } catch (error) {
+                console.error("Error during API request:", error);
+                removeTypingIndicator();
+                chatbox.innerHTML += `<div class="message assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog să scrii din nou.</p></div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
             }
-        } catch (error) {
-            console.error("Error during API request:", error);
-            removeTypingIndicator();
-            chatbox.innerHTML += `<div class="message assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog să scrii din nou.</p></div>`;
+        }
+
+        function handleMessageInput() {
+            const userMessage = inputBox.value.trim();
+            if (userMessage === '') return;
+
+            if (waitingForCode) {
+                handleCodeInput(userMessage);
+            } else {
+                sendMessage(userMessage);
+            }
+        }
+
+        function startFreeSession() {
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute de neuitat.</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            freeSessionStarted = true;
+        }
+
+        function startFreeSessionTimer() {
+            setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
+        }
+
+        function showPaywall() {
+            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
+                <p>Introduceți codul pentru a continua conversația.</p></div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+            waitingForCode = true;
+        }
+
+        function handleCodeInput(enteredCode) {
+            chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
+            if (enteredCode === '1234') {
+                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
+                waitingForCode = false;
+            } else {
+                chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
+            }
             chatbox.scrollTop = chatbox.scrollHeight;
         }
-    }
 
-    function handleMessageInput() {
-        const userMessage = inputBox.value.trim();
-        if (userMessage === '') return;
-
-        if (waitingForCode) {
-            handleCodeInput(userMessage);
-        } else {
-            sendMessage(userMessage);
+        async function openChatWithInitialMessage() {
+            toggleChat();
+            chatbox.innerHTML += `
+                <div class="message assistant">
+                    <p>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
+                        <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
+                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
+                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
+                    </p>
+                </div>`;
         }
-    }
 
-    function startTimer() {
-        setTimeout(showPaywall, 30000); // 5 minutes in milliseconds
-    }
-
-    function showPaywall() {
-        chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
-            <p>Introduceți codul pentru a continua conversația.</p></div>`;
-        chatbox.scrollTop = chatbox.scrollHeight;
-        waitingForCode = true;
-    }
-
-    function handleCodeInput(enteredCode) {
-        chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
-        if (enteredCode === '1234') {
-            chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
-            waitingForCode = false;
-        } else {
-            chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
-        }
-        chatbox.scrollTop = chatbox.scrollHeight;
-    }
-
-    async function openChatWithInitialMessage() {
-        toggleChat();
-        chatbox.innerHTML += `
-            <div class="message assistant">
-                <p>
-                    Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
-                    <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span><br>
-                    <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
-                    <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
-                </p>
-            </div>`;
-    }
-
-    window.onload = function() {
-        chatContainer.style.display = 'none';
-        minimizedChat.style.display = 'flex';
-        setTimeout(() => {
-            openChatWithInitialMessage();
-        }, 2200);
-    };
-</script>
-
+        window.onload = function() {
+            chatContainer.style.display = 'none';
+            minimizedChat.style.display = 'flex';
+            setTimeout(() => {
+                openChatWithInitialMessage();
+            }, 2200);
+        };
+    </script>
 </body>
 </html>
