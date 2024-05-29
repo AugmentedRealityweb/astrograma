@@ -53,23 +53,20 @@
             border-radius: 20px;
             border: 3px solid #260050;
         }
-        .chat-bubble {
-            padding: 5px 10px; /* Ajustăm padding-ul pentru a reduce spațiul sus-jos */
-            margin: 5px 0; /* Ajustăm margin pentru a reduce spațiul dintre mesaje */
-            border-radius: 20px; /* Modifică valoarea pentru a rotunji marginile */
-            display: inline-block;
+        .message {
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 20px;
             max-width: 80%;
-            word-wrap: break-word; /* Asigurăm că textul lung se rupe la marginea casetei */
+            word-wrap: break-word;
         }
-
-        .chat-bubble.user {
+        .message.user {
             background-color: #ffffff;
             color: #4722a2;
             align-self: flex-end;
             text-align: right;
         }
-
-        .chat-bubble.assistant {
+        .message.assistant {
             background-color: #f1f1f1;
             color: #4722a2;
             align-self: flex-start;
@@ -333,7 +330,7 @@
             const userMessage = inputBox.value.trim();
             if (userMessage === '') return;
 
-            chatbox.innerHTML += `<div class="chat-bubble user"><p>${userMessage}</p></div>`;
+            chatbox.innerHTML += `<div class="message user">${userMessage}</div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             inputBox.value = '';
 
@@ -345,7 +342,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă erotica și provocatoare. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite. Ea menține conversația pe un ton jucăuș și seducător, folosind complimente, tachinări și glume sexy pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de ea.
                 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -380,7 +377,7 @@
 
                     removeTypingIndicator();
 
-                    chatbox.innerHTML += `<div class="chat-bubble assistant"><p>${assistantMessage}</p></div>`;
+                    chatbox.innerHTML += `<div class="message assistant">${assistantMessage}</div>`;
                     chatbox.scrollTop = chatbox.scrollHeight;
 
                     messageSound.play();
@@ -388,12 +385,12 @@
                         notificationDot.style.display = 'block';
                     }
                 } else {
-                    throw new Error("Invalid response format");
+                                        throw new Error("Invalid response format");
                 }
             } catch (error) {
                 console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>There was an error processing your request. Please try again.</p></div>`;
+                chatbox.innerHTML += `<div class="message assistant">There was an error processing your request. Please try again.</div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
@@ -406,7 +403,7 @@
         async function openChatWithInitialMessage() {
             toggleChat();
             chatbox.innerHTML += `
-                <div class="chat-bubble assistant">
+                <div class="message assistant">
                     <p>
                         Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
                         <span class="prompt" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</span>
@@ -427,3 +424,4 @@
     </script>
 </body>
 </html>
+
