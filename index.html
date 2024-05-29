@@ -23,14 +23,13 @@
             max-height: 90vh;
             background-color: white;
             background: url('gif.gif');
-            transition: border-radius 0.3s ease;
+            transition: border-radius 0.3s ease, bottom 0.3s ease, right 0.3s ease, transform 0.3s ease;
         }
         #chatContainer.open {
-            border-radius: 50px;
+            border-radius: 20px;
             bottom: 50%;
             right: 50%;
             transform: translate(50%, 50%);
-            border-radius: 20px;
         }
         #chatbox {
             flex-grow: 1;
@@ -40,6 +39,35 @@
             background-color: #260050;
             border-top: 1px solid #ccc;
             color: #4722a2;
+            scrollbar-width: thin;
+            scrollbar-color: #975bf8 #260050;
+        }
+        #chatbox::-webkit-scrollbar {
+            width: 12px;
+        }
+        #chatbox::-webkit-scrollbar-track {
+            background: #260050;
+        }
+        #chatbox::-webkit-scrollbar-thumb {
+            background-color: #975bf8;
+            border-radius: 20px;
+            border: 3px solid #260050;
+        }
+        .chat-bubble {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .chat-bubble.user {
+            background-color: #ffffff;
+            color: #4722a2;
+            align-self: flex-end;
+        }
+        .chat-bubble.assistant {
+            background-color: #f1f1f1;
+            color: #4722a2;
+            align-self: flex-start;
         }
         #inputBox {
             flex-grow: 1;
@@ -47,6 +75,10 @@
             padding: 10px;
             border-radius: 0 0 0 10px;
             outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+        #inputBox:focus {
+            box-shadow: 0 0 10px rgba(151, 91, 248, 0.5);
         }
         #chatHeader {
             display: flex;
@@ -66,6 +98,13 @@
             font-weight: bold;
             flex-grow: 1;
         }
+        #closeButton {
+            background: transparent;
+            border: none;
+            color: black;
+            font-size: 20px;
+            cursor: pointer;
+        }
         #sendButton {
             width: 80px;
             background-color: #9700f8;
@@ -74,6 +113,10 @@
             border-radius: 0 0 20px 0;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #sendButton:hover {
+            background-color: #7500c4;
         }
         #minimizedChat {
             display: flex;
@@ -119,29 +162,6 @@
             border-radius: 50%;
             object-fit: cover;
             z-index: 2;
-        }
-        .message {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-        }
-        .message p {
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 80%;
-            color: #4722a2;
-        }
-        .message.user {
-            justify-content: flex-end;
-        }
-        .message.user p {
-            background-color: #ffffff;
-        }
-        .message.assistant {
-            justify-content: flex-start;
-        }
-        .message.assistant p {
-            background-color: #f1f1f1;
         }
         .typing-indicator {
             display: flex;
@@ -201,13 +221,24 @@
             margin: 10px 0;
             cursor: pointer;
         }
+        #notificationDot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div id="chatContainer" class="open">
-        <div id="chatHeader" onclick="toggleChat()">
-            <img src="https://smartcdn.gprod.postmedia.digital/torontosun/wp-content/uploads/2023/11/aitana-e1701191749693.jpg" alt="Ramona">
+    <div id="chatContainer">
+        <div id="chatHeader">
+            <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
             <span>Ramona</span>
+            <button id="closeButton" onclick="toggleChat()">✖</button>
         </div>
         <div id="chatbox"></div>
         <div style="display: flex;">
@@ -216,7 +247,8 @@
         </div>
     </div>
     <div id="minimizedChat" onclick="toggleChat()">
-        <img src="https://smartcdn.gprod.postmedia.digital/torontosun/wp-content/uploads/2023/11/aitana-e1701191749693.jpg" alt="Ramona">
+        <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+        <div id="notificationDot"></div>
     </div>
 
     <script>
@@ -225,14 +257,18 @@
         const inputBox = document.getElementById('inputBox');
         const sendButton = document.getElementById('sendButton');
         const minimizedChat = document.getElementById('minimizedChat');
+        const notificationDot = document.getElementById('notificationDot');
         let typingIndicator;
         let conversationHistory = [];
+
+        const messageSound = new Audio('sunet.mp3');
 
         function toggleChat() {
             if (chatContainer.style.display === 'none') {
                 chatContainer.style.display = 'block';
                 chatContainer.classList.add('open');
                 minimizedChat.style.display = 'none';
+                notificationDot.style.display = 'none';
             } else {
                 chatContainer.style.display = 'none';
                 chatContainer.classList.remove('open');
@@ -261,12 +297,18 @@
             return response.replace(/(?:\.\s*)/g, '.<br><br>');
         }
 
-        function showTypingIndicator() {
+        function showTypingIndicator(messageLength) {
             typingIndicator = document.createElement('div');
             typingIndicator.className = 'typing-indicator';
             typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
             chatbox.appendChild(typingIndicator);
             chatbox.scrollTop = chatbox.scrollHeight;
+
+            if (messageLength > 10) {
+                setTimeout(removeTypingIndicator, 4000);
+            } else {
+                setTimeout(removeTypingIndicator, 1000);
+            }
         }
 
         function removeTypingIndicator() {
@@ -280,19 +322,19 @@
             const userMessage = inputBox.value.trim();
             if (userMessage === '') return;
 
-            chatbox.innerHTML += `<div class="message user"><p>${userMessage}</p></div>`;
+            chatbox.innerHTML += `<div class="chat-bubble user"><p>${userMessage}</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             inputBox.value = '';
 
             conversationHistory.push({ role: "user", content: userMessage });
 
-            showTypingIndicator();
+            showTypingIndicator(userMessage.split(' ').length);
 
             try {
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe.Ea va vorbi pervers dar in limita bunului simt. Va vorbi despre importanta sexului, dar fara vulgaritate. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Poate vorbi deschis despre fantezii. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă plăcută și provocatoare. Dacă utilizatorul devine vulgar, Ramona îi va atrage atenția că nu este sexy să vorbească urât. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite și evitând discuțiile despre violență, abuz, droguri sau alte subiecte nepotrivite. Ea menține conversația respectuoasă și pe un ton jucăuș și seducător, folosind complimente, tachinări și glume pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, cu accente prietenoase și amuzante, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de el.
                 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -327,15 +369,20 @@
 
                     removeTypingIndicator();
 
-                    chatbox.innerHTML += `<div class="message assistant"><p>${assistantMessage}</p></div>`;
+                    chatbox.innerHTML += `<div class="chat-bubble assistant"><p>${assistantMessage}</p></div>`;
                     chatbox.scrollTop = chatbox.scrollHeight;
+
+                    messageSound.play();
+                    if (chatContainer.style.display === 'none') {
+                        notificationDot.style.display = 'block';
+                    }
                 } else {
                     throw new Error("Invalid response format");
                 }
             } catch (error) {
                 console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="message assistant"><p>There was an error processing your request. Please try again.</p></div>`;
+                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>There was an error processing your request. Please try again.</p></div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
@@ -348,9 +395,9 @@
         async function openChatWithInitialMessage() {
             toggleChat();
             chatbox.innerHTML += `
-                <div class="message assistant">
+                <div class="chat-bubble assistant">
                     <p>
-                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim😘<br>
+                        Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni sau spune-mi tu despre ce vrei să vorbim 😘:<br>
                         <span class="prompt" onclick="sendPromptMessage('Spune-mi fanteziile tale cele mai profunde.')">Spune-mi fanteziile tale cele mai profunde.</span>
                         <span class="prompt" onclick="sendPromptMessage('Descrie-mi ce porți acum.')">Descrie-mi ce porți acum.</span>
                         <span class="prompt" onclick="sendPromptMessage('Care este modul tău preferat de a mă tachina?')">Care este modul tău preferat de a mă tachina?</span>
