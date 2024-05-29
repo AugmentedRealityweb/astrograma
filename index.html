@@ -66,14 +66,14 @@
             color: #4722a2;
             align-self: flex-end;
             text-align: right;
-            width: auto; /* Ajustează lungimea casetei pentru a se potrivi textului */
+            margin-left: auto;
         }
         .message.assistant {
             background-color: #f1f1f1;
             color: #4722a2;
             align-self: flex-start;
             text-align: left;
-            width: auto; /* Ajustează lungimea casetei pentru a se potrivi textului */
+            margin-right: auto;
         }
         #inputBox {
             flex-grow: 1;
@@ -345,8 +345,8 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face conversatii erotice și jucăușe. Ea poarta conversațiile într-o notă seducatoare și provocatoare. Ramona oferă o experiență intimă și captivantă prin mesaje. Ea menține conversația folosind complimente, tachinări și glume erotice pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, și amuzant, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de ea.
-                Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face conversații erotice și jucăușe. Ea poartă conversațiile într-o notă seducătoare și provocatoare. Ramona oferă o experiență intimă și captivantă prin mesaje. Ea menține conversația folosind complimente, tachinări și glume erotice pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător și amuzant, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop să facă utilizatorul să se îndrăgostească de ea.
+Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
                     method: 'POST',
@@ -427,3 +427,4 @@
     </script>
 </body>
 </html>
+
