@@ -63,6 +63,7 @@
             background-color: #ffffff;
             color: #4722a2;
             align-self: flex-end;
+            text-align: right;
         }
         .chat-bubble.assistant {
             background-color: #f1f1f1;
@@ -235,7 +236,10 @@
     </style>
 </head>
 <body>
-    <audio id="messageSound" src="sunet.MP3"></audio>
+    <audio id="messageSound">
+        <source src="sunet.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <div id="chatContainer">
         <div id="chatHeader">
             <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
@@ -383,7 +387,7 @@
             } catch (error) {
                 console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog încearcă din nou.</p></div>`;
+                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>There was an error processing your request. Please try again.</p></div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
