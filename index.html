@@ -391,7 +391,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună.😉</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             freeSessionStarted = true;
         }
@@ -401,8 +401,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p><br>
-                <p>Introduceți codul primit după efectuarea plății pentru a continua conversația.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Dragule, cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua. După efectuarea plății vei primi un cod pe care te rog să-l introduci aici.😘 </p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             waitingForCode = true;
         }
@@ -410,7 +409,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         function handleCodeInput(enteredCode) {
             chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
             if (enteredCode === '1234') {
-                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Puteți continua conversația.</p></div>`;
+                chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația. Unde am rămas?</p></div>`;
                 waitingForCode = false;
             } else {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este greșit, te rog verifică codul primit după efectuarea plății.</p></div>`;
