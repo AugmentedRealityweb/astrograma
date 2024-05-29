@@ -54,22 +54,25 @@
             border: 3px solid #260050;
         }
         .chat-bubble {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 10px;
-            max-width: 80%;
-        }
-        .chat-bubble.user {
-            background-color: #ffffff;
-            color: #4722a2;
-            align-self: flex-end;
-            text-align: right;
-        }
-        .chat-bubble.assistant {
-            background-color: #f1f1f1;
-            color: #4722a2;
-            align-self: flex-start;
-        }
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    display: inline-block;
+    max-width: 80%;
+}
+
+.chat-bubble.user {
+    background-color: #ffffff;
+    color: #4722a2;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.chat-bubble.assistant {
+    background-color: #f1f1f1;
+    color: #4722a2;
+    align-self: flex-start;
+}
         #inputBox {
             flex-grow: 1;
             border: none;
