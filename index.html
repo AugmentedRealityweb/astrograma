@@ -223,17 +223,19 @@
         }
         #notificationDot {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 10px;
-            height: 10px;
+            top: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
             background-color: red;
             border-radius: 50%;
             display: none;
+            z-index: 3;
         }
     </style>
 </head>
 <body>
+    <audio id="messageSound" src="sunet.MP3"></audio>
     <div id="chatContainer">
         <div id="chatHeader">
             <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
@@ -258,10 +260,9 @@
         const sendButton = document.getElementById('sendButton');
         const minimizedChat = document.getElementById('minimizedChat');
         const notificationDot = document.getElementById('notificationDot');
+        const messageSound = document.getElementById('messageSound');
         let typingIndicator;
         let conversationHistory = [];
-
-        const messageSound = new Audio('sunet.mp3');
 
         function toggleChat() {
             if (chatContainer.style.display === 'none') {
@@ -382,7 +383,7 @@
             } catch (error) {
                 console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>There was an error processing your request. Please try again.</p></div>`;
+                chatbox.innerHTML += `<div class="chat-bubble assistant"><p>A apărut o eroare la trimiterea mesajului. Te rog încearcă din nou.</p></div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
