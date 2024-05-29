@@ -7,9 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0; /* Background color for better visibility */
@@ -19,14 +16,18 @@
             max-width: 100%;
             display: none; /* Initially hidden */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 50%; /* Make it oval */
+            border-radius: 20px; /* Initial border-radius */
             overflow: hidden;
             flex-direction: column;
             background-color: white;
             transition: border-radius 0.3s ease;
+            position: fixed;
+            bottom: 20px; /* Position from bottom */
+            right: 20px; /* Position from right */
+            z-index: 1;
         }
         #chatContainer.open {
-            border-radius: 50px; /* Adjust the border-radius when opened */
+            border-radius: 20px; /* Adjust the border-radius when opened */
         }
         #chatbox {
             flex-grow: 1;
@@ -104,11 +105,10 @@
             background-color: transparent;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            position: fixed; /* Ensure it stays centered */
-            bottom: 50%; /* Adjust as necessary */
-            right: 50%; /* Adjust as necessary */
-            transform: translate(50%, 50%);
+            z-index: 2;
+            position: fixed;
+            bottom: 20px; /* Position from bottom */
+            right: 20px; /* Position from right */
         }
         #minimizedChat::before {
             content: '';
@@ -196,6 +196,8 @@
                 width: 100%;
                 border-radius: 0;
                 max-height: 100vh;
+                bottom: 0; /* Position at the bottom */
+                right: 0; /* Position at the right */
             }
             #chatContainer.open {
                 border-radius: 0;
