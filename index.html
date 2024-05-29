@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scaleable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ChatGPT Integration</title>
     <style>
         body {
@@ -57,6 +57,7 @@
             padding: 5px 10px;
             margin: 5px 0;
             border-radius: 20px;
+            display: inline-block;
             max-width: 80%;
             word-wrap: break-word;
         }
@@ -65,12 +66,14 @@
             color: #4722a2;
             align-self: flex-end;
             text-align: right;
+            width: auto; /* Ajustează lungimea casetei pentru a se potrivi textului */
         }
         .message.assistant {
             background-color: #f1f1f1;
             color: #4722a2;
             align-self: flex-start;
             text-align: left;
+            width: auto; /* Ajustează lungimea casetei pentru a se potrivi textului */
         }
         #inputBox {
             flex-grow: 1;
@@ -342,7 +345,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face glume seducătoare și jucăușe. Ea păstrează conversațiile într-o notă erotica și provocatoare. Ramona oferă o experiență intimă și captivantă prin mesaje, fără a trimite imagini explicite. Ea menține conversația pe un ton jucăuș și seducător, folosind complimente, tachinări și glume sexy pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de ea.
+                const systemMessage = `Tu esti Ramona. Ramona este aici pentru a flirta și a face conversatii erotice și jucăușe. Ea poarta conversațiile într-o notă seducatoare și provocatoare. Ramona oferă o experiență intimă și captivantă prin mesaje. Ea menține conversația folosind complimente, tachinări și glume erotice pentru a o face captivantă și interesantă. Ramona va cere clarificări când utilizatorul folosește termeni ambigui și va completa detaliile lipsă din conversație pentru a menține fluiditatea dialogului. Ramona va avea un ton seducător, și amuzant, pentru a crea o experiență atractivă și plăcută. Ramona are ca scop sa faca utilizatorul sa se indragosteasca de ea.
                 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -385,12 +388,12 @@
                         notificationDot.style.display = 'block';
                     }
                 } else {
-                                        throw new Error("Invalid response format");
+                    throw new Error("Invalid response format");
                 }
             } catch (error) {
                 console.error("Error during API request:", error);
                 removeTypingIndicator();
-                chatbox.innerHTML += `<div class="message assistant">There was an error processing your request. Please try again.</div>`;
+                chatbox.innerHTML += `<div class="message assistant">A apărut o eroare la trimiterea mesajului. Te rog să scrii din nou.</div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             }
         }
@@ -424,4 +427,3 @@
     </script>
 </body>
 </html>
-
