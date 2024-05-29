@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scaleable=no">
     <title>ChatGPT Integration</title>
     <style>
         body {
@@ -229,7 +229,7 @@
     </audio>
     <div id="chatContainer">
         <div id="chatHeader">
-            <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
+                       <img src="https://www.livemint.com/lm-img/img/2023/11/26/600x338/403913659_1090924071915537_5840352482645330250_n_1700972603125_1700972609863.jpg" alt="Ramona">
             <span>Ramona</span>
             <button id="closeButton" onclick="toggleChat()">✖</button>
         </div>
@@ -396,7 +396,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
 
         function showPaywall() {
             chatbox.innerHTML += `<div class="message assistant"><p>Te rog alege o variantă plătită pentru a continua:</p>
-                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
+                <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
                 <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                 <p>Introduceți codul pentru a continua conversația.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -404,6 +404,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function handleCodeInput(enteredCode) {
+            chatbox.innerHTML += `<div class="message user"><p>${enteredCode}</p></div>`;
             if (enteredCode === '1234') {
                 chatbox.innerHTML += `<div class="message assistant"><p>Codul este corect. Putem continua conversația.</p></div>`;
                 waitingForCode = false;
@@ -420,7 +421,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
                     <p>
                         Bună, Eu sunt Ramona, tu cum te numești? Pentru a începe sesiunea, alege una dintre următoarele opțiuni😘<br>
                         <span class="prompt" onclick="startFreeSession()">Sesiune gratuită 5 minute</span>
-                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span>
+                        <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 30 minute 20lei</span><br>
                         <span class="prompt" onclick="window.open('https://99delucruri.gumroad.com/l/30min', '_blank')">Sesiune 1 zi 100lei</span>
                     </p>
                 </div>`;
@@ -436,3 +437,4 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
     </script>
 </body>
 </html>
+
