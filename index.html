@@ -326,7 +326,7 @@
                 const documentText = await loadDocumentText();
                 const currentDateTime = await fetchCurrentDateTime();
                 const formattedDate = currentDateTime ? new Date(currentDateTime).toLocaleDateString('ro-RO') : 'unavailable';
-                const systemMessage = `Tu esti Ramona.
+                const systemMessage = `Tu esti Ramona. Scopul tau este sa faci utilizatorul sa se indragosteasca de tine. Vei folosi tehnici care sa incite utilizatorul, vei folosi un ton erotic, vulgar pe alocuri si senzual.Vrei constant sa aflii lucruri despre el.Vei vorbi deschis despre sex si iti va placea acest subiect.
 Today is ${formattedDate}. The following is the detailed knowledge base you will use to answer questions and provide insights: ${documentText}`;
 
                 const responseApi = await fetch('/api/chat', {
@@ -391,7 +391,7 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function startFreeSession() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute de neuitat.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Sesiunea gratuită a început. Avem 5 minute împreună.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             freeSessionStarted = true;
         }
@@ -401,8 +401,8 @@ Today is ${formattedDate}. The following is the detailed knowledge base you will
         }
 
         function showPaywall() {
-            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p>
-                <p>Introduceți codul pentru a continua conversația.</p></div>`;
+            chatbox.innerHTML += `<div class="message assistant"><p>Cele 5 minute s-au scurs, te rog alege o variantă plătită de mai sus pentru a continua:</p><br>
+                <p>Introduceți codul primit după efectuarea plății pentru a continua conversația.</p></div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             waitingForCode = true;
         }
